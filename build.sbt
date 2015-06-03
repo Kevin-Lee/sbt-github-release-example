@@ -6,6 +6,8 @@ import com.github.retronym.SbtOneJar._
 
 import ohnosequences.sbt.SbtGithubReleasePlugin._
 
+import S3._
+
 name := """sbt-github-release-example"""
 
 val projectVersion = "1.0"
@@ -21,8 +23,6 @@ libraryDependencies ++= Seq(
     ExclusionRule(organization = "org.scala-lang.modules", name = "scala-xml_2.11")
   )
 )
-
-oneJarSettings
 
 lazy val writeVersion = inputKey[Unit]("Write Adonis Version in File'")
 
@@ -45,7 +45,22 @@ lazy val listBinNames = taskKey[Seq[File]]("Prints 'Hello World'")
 
 def wildcardFilter(name: String): java.io.FileFilter = new WildcardFileFilter(name).asInstanceOf[java.io.FileFilter]
 
-def fileList(dir: File, name: String): List[File] = dir.listFiles(wildcardFilter(name)).toList
+def getAllSubDirs(dir: File): Array[File] = dir.listFiles(DirectoryFilter).flatMap(x => x +: getAllSubDirs(x))
+
+def fileList(dir: File, name: String): List[File] = {
+  def fileList0(dir: File, name: String): List[File] = dir.listFiles(wildcardFilter(name)).toList
+  (dir :: getAllSubDirs(dir).toList).flatMap(fileList0(_, name))
+}
+def pathNameAndFileList(base: File, dir: String, name: String): List[(File, String)] = {
+  val basePath = base.getPath
+  val basePathLength = basePath.length + (if (basePath.endsWith(java.io.File.separator)) 0 else 1)
+  println(
+    s"""
+       |basePath: $basePath
+       |basePathLength: $basePathLength
+     """.stripMargin)
+  fileList(base / dir, name).map(f => (f, f.getPath)).map { case (file, parent) => (file, parent.drop(basePathLength)) }
+}
 
 listBinNames := {
 
@@ -53,15 +68,19 @@ listBinNames := {
 //    override def accept(pathname: File): Boolean = pathname.getName.endsWith("one-jar.jar")
 //  }).toList
 //  val binNames = (target.value / "scala-2.11").listFiles(wildcardFilter("*one-jar.jar")).toList
-  val binNames = fileList(target.value / "scala-2.11", "*one-jar.jar")
+//  val binNames = fileList(target.value / "scala-2.11", "*one-jar.jar")
+//  val binNames = fileList(target.value , "*")
+  val binNames = pathNameAndFileList(target.value, "" , "*.jar")
 
-  println(s"fileNames: $binNames")
+  println(s"fileNames: \n${binNames.mkString("\n")}")
 
-  binNames
+  binNames.map(_._1)
 }
 
+oneJarSettings
 mainClass in oneJar := Some("cc.kevinlee.sbt.onejar.MainApp")
 
+/* GitHub Release { */
 GithubRelease.repo := "Kevin-Lee/sbt-github-release-example"
 
 GithubRelease.tag := s"Release-v${projectVersion}"
@@ -74,10 +93,20 @@ GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md
 
 GithubRelease.assets := {
 
-  val binNames = fileList(target.value / "scala-2.11", "*one-jar.jar")
+  val binNames = fileList(target.value / "bin-all", "*one-jar.jar")
 
   println(s"fileNames: $binNames")
 
   binNames
 }
+/* } GitHub Release */
 
+/* S3 Upload { */
+s3Settings
+
+mappings in upload := pathNameAndFileList(target.value / "bin-all", "", "*one-jar.jar")
+
+host in upload := sys.env("S3_BUCKET")
+
+credentials += Credentials(Path.userHome / ".s3credentials")
+/* } S3 Upload */
