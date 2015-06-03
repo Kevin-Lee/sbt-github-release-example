@@ -13,7 +13,8 @@ before_script:
   - ./.before-deploy.sh
 script:
   - sbt one-jar
-  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt checkGithubCredentials releaseOnGithub; fi
+#  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt checkGithubCredentials releaseOnGithub; fi
+  - sbt checkGithubCredentials releaseOnGithub
   # Tricks to avoid unnecessary cache updates
   - find $HOME/.sbt -name "*.lock" | xargs rm
   - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
