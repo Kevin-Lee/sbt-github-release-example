@@ -8,11 +8,11 @@ import ohnosequences.sbt.SbtGithubReleasePlugin._
 
 name := """sbt-github-release-example"""
 
-version := "1.0"
+val projectVersion = "1.0"
 
-val projectVersion = "2.11.6"
+version := projectVersion
 
-scalaVersion := projectVersion
+scalaVersion := "2.11.6"
 
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % scalaVersion.value,
