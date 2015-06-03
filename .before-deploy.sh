@@ -18,7 +18,7 @@ if [ -n "$GITHUB_OAUTH" ]
 
   echo "Writing GitHub OAuth to $HOME/.netrc"
   echo "machine github.com" > $HOME/.netrc
-  echo "  login the-generated-token" >> $HOME/.netrc
+  echo "  login $GITHUB_OAUTH" >> $HOME/.netrc
 fi
 
 # export GIT_TAG="Release-v$TRAVIS_BUILD_NUMBER"
