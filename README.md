@@ -1,3 +1,3 @@
 # sbt-github-release-example
 
-* Testing the first release
+* Testing the first release!
