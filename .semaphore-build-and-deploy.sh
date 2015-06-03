@@ -71,6 +71,7 @@ if [ "$THIS_BRANCH" == "release" ];
       echo "Build and Deploy: Failed"
       echo "============================================"
       exit 1
+    fi
   else
     echo "============================================"
     echo "Build and Deploy: Failed"
