@@ -93,7 +93,7 @@ GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md
 
 GithubRelease.assets := {
 
-  val binNames = fileList(target.value / "bin-all", "*one-jar.jar")
+  val binNames = fileList(target.value / "ci", "*one-jar.jar")
 
   println(s"fileNames: $binNames")
 
@@ -104,7 +104,7 @@ GithubRelease.assets := {
 /* S3 Upload { */
 s3Settings
 
-mappings in upload := pathNameAndFileList(target.value / "bin-all", "", "*one-jar.jar")
+mappings in upload := pathNameAndFileList(target.value, "ci", "*one-jar.jar")
 
 host in upload := sys.env("S3_BUCKET")
 
