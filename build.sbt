@@ -1,8 +1,6 @@
 import org.apache.commons.io.filefilter.WildcardFileFilter
 import sbt.Keys._
 
-import scala.collection.immutable.Seq
-
 import com.github.retronym.SbtOneJar
 import com.github.retronym.SbtOneJar._
 
