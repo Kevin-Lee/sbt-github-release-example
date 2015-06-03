@@ -63,9 +63,20 @@ if [ "$THIS_BRANCH" == "release" ];
     echo "======================================================"
   fi
 
-  sbt checkGithubCredentials releaseOnGithub
-
-  sbt s3-upload
+  if sbt checkGithubCredentials releaseOnGithub 2>&1 > /dev/null ; then
+    if sbt s3-upload 2>&1 > /dev/null ; then
+      echo "Uploading to S3: Done"
+    else
+      echo "============================================"
+      echo "Build and Deploy: Failed"
+      echo "============================================"
+      exit 1
+  else
+    echo "============================================"
+    echo "Build and Deploy: Failed"
+    echo "============================================"
+    exit 1
+  fi
 
   echo "============================================"
   echo "Build and Deploy: Done"
