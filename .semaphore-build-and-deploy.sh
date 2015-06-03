@@ -65,6 +65,8 @@ if [ "$THIS_BRANCH" == "release" ];
 
   sbt checkGithubCredentials releaseOnGithub
 
+  sbt s3-upload
+
   echo "============================================"
   echo "Build and Deploy: Done"
   echo "============================================"

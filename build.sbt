@@ -108,5 +108,7 @@ mappings in upload := pathNameAndFileList(target.value / "bin-all", "", "*one-ja
 
 host in upload := sys.env("S3_BUCKET")
 
+progress in upload := true
+
 credentials += Credentials(Path.userHome / ".s3credentials")
 /* } S3 Upload */
