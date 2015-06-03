@@ -1,0 +1,23 @@
+language: scala
+cache:
+  directories:
+    - "$HOME/.ivy2/cache"
+    - "$HOME/.sbt/boot"
+jdk:
+  - oraclejdk8
+scala:
+  - 2.11.6
+before_script:
+  - sbt clean
+  - sbt writeVersion
+  - ./.before-deploy.sh
+script:
+  - sbt one-jar
+  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt checkGithubCredentials releaseOnGithub; fi
+  # Tricks to avoid unnecessary cache updates
+  - find $HOME/.sbt -name "*.lock" | xargs rm
+  - find $HOME/.ivy2 -name "ivydata-*.properties" | xargs rm
+#after_success: "sbt coveralls"
+branches:
+  except:
+    - /^Release-v.*/

@@ -1,0 +1,1 @@
+# sbt-github-release-example
