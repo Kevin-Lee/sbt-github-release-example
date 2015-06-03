@@ -4,7 +4,7 @@ sbt clean
 sbt writeVersion
 sbt test
 sbt one-jar
-export THIS_BRANCH="$CI_BRANCH"
+export THIS_BRANCH="$BRANCH_NAME"
 if [ "$THIS_BRANCH" == "release" ];
   then
 
@@ -18,18 +18,6 @@ if [ "$THIS_BRANCH" == "release" ];
     exit 1
   fi
 
-  if [ -n "$GITHUB_OAUTH" ]
-    then
-    echo "Writing GitHub OAuth to $HOME/.github"
-    echo "login = Kevin-App-Builder" > $HOME/.github
-    echo "oauth = $GITHUB_OAUTH" >> $HOME/.github
-
-  #  echo "Writing GitHub OAuth to $HOME/.netrc"
-  #  echo "machine github.com" > $HOME/.netrc
-  #  echo "  login $GITHUB_OAUTH" >> $HOME/.netrc
-  fi
-
-  # export GIT_TAG="Release-v$TRAVIS_BUILD_NUMBER"
   export GIT_TAG="Release-v$PROJECT_VERSION"
   echo "GIT_TAG=$GIT_TAG"
   export PROJECT_BUILD_NAME="$GIT_TAG"
@@ -44,7 +32,7 @@ if [ "$THIS_BRANCH" == "release" ];
     git config --global user.email "builder+github@lckymn.com"
     git config --global user.name "Kevin-App-Builder"
 
-    git tag "$GIT_TAG" -a -m "Automatically generated tag by CodeShip CI for $GIT_TAG"
+    git tag "$GIT_TAG" -a -m "Automatically generated tag by Semaphore CI for $GIT_TAG"
     git push git@github.com:Kevin-Lee/sbt-github-release-example --tags
 
     echo "======================================================"

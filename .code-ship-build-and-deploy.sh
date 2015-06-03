@@ -44,7 +44,7 @@ if [ "$THIS_BRANCH" == "release" ];
     git config --global user.email "builder+github@lckymn.com"
     git config --global user.name "Kevin-App-Builder"
 
-    git tag "$GIT_TAG" -a -m "Automatically generated tag by CodeShip CI for $GIT_TAG"
+    git tag "$GIT_TAG" -a -m "Automatically generated tag by Travis CI for build $TRAVIS_BUILD_NUMBER"
     git push git@github.com:Kevin-Lee/sbt-github-release-example --tags
 
     echo "======================================================"
