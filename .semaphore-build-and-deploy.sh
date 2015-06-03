@@ -63,8 +63,10 @@ if [ "$THIS_BRANCH" == "release" ];
     echo "======================================================"
   fi
 
-  if sbt checkGithubCredentials releaseOnGithub 2>&1 > /dev/null ; then
-    if sbt s3-upload 2>&1 > /dev/null ; then
+  echo "Deploying to GitHub"
+  if sbt checkGithubCredentials releaseOnGithub ; then
+    echo "Deploying to GitHub: Done"
+    if sbt s3-upload ; then
       echo "Uploading to S3: Done"
     else
       echo "============================================"
