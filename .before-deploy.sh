@@ -16,9 +16,9 @@ if [ -n "$GITHUB_OAUTH" ]
   echo "login = Kevin-App-Builder" > $HOME/.github
   echo "oauth = $GITHUB_OAUTH" >> $HOME/.github
 
-  echo "Writing GitHub OAuth to $HOME/.netrc"
-  echo "machine github.com" > $HOME/.netrc
-  echo "  login $GITHUB_OAUTH" >> $HOME/.netrc
+#  echo "Writing GitHub OAuth to $HOME/.netrc"
+#  echo "machine github.com" > $HOME/.netrc
+#  echo "  login $GITHUB_OAUTH" >> $HOME/.netrc
 fi
 
 # export GIT_TAG="Release-v$TRAVIS_BUILD_NUMBER"
