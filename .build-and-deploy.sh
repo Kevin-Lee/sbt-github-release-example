@@ -75,7 +75,13 @@ if [ "$CI_BRANCH" == "release" ];
   fi
 
   sbt checkGithubCredentials releaseOnGithub
-  
+
+  echo "============================================"
+  echo "Build and Deploy: Done"
+  echo "============================================"
 else
+  echo "============================================"
   echo "It is not release branch so skip deployment."
+  echo "Build: Done"
+  echo "============================================"
 fi
