@@ -12,9 +12,9 @@ name := """sbt-github-release-example"""
 
 version := "1.0"
 
-scalaVersion := "2.11.6"
+val projectVersion = "2.11.6"
 
-val projectVersion = version.value
+scalaVersion := projectVersion
 
 libraryDependencies ++= Seq(
   "org.scala-lang" % "scala-library" % scalaVersion.value,
