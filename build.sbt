@@ -41,8 +41,6 @@ writeVersion := {
   println("Done: Writing Version File\n")
 }
 
-lazy val listBinNames = taskKey[Seq[File]]("Prints 'Hello World'")
-
 def wildcardFilter(name: String): java.io.FileFilter = new WildcardFileFilter(name).asInstanceOf[java.io.FileFilter]
 
 def getAllSubDirs(dir: File): Array[File] = dir.listFiles(DirectoryFilter).flatMap(x => x +: getAllSubDirs(x))
@@ -61,6 +59,8 @@ def pathNameAndFileList(base: File, dir: String, name: String): List[(File, Stri
      """.stripMargin)
   fileList(base / dir, name).map(f => (f, f.getPath)).map { case (file, parent) => (file, parent.drop(basePathLength)) }
 }
+
+lazy val listBinNames = taskKey[Seq[File]]("Prints 'file list'")
 
 listBinNames := {
 
