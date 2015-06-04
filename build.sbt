@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
   )
 )
 
-lazy val writeVersion = inputKey[Unit]("Write Adonis Version in File'")
+lazy val writeVersion = inputKey[Unit]("Write Version in File'")
 
 writeVersion := {
   println("\n== Writing Version File ==")
