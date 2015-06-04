@@ -1,5 +1,18 @@
 #!/bin/bash
 
+cleanUp() {
+  if [ -e "$HOME/.github" ]
+    then
+    echo "Remove $HOME/.github"
+    rm $HOME/.github
+  fi
+  if [ -e "$HOME/.s3credentials" ]
+    then
+    echo "Remove $HOME/.s3credentials"
+    rm $HOME/.s3credentials
+  fi
+}
+
 sbt clean
 sbt writeVersion
 sbt test
@@ -29,6 +42,12 @@ if [ "$THIS_BRANCH" == "release" ];
   #  echo "  login $GITHUB_OAUTH" >> $HOME/.netrc
   fi
 
+  if [ -n "$S3_INFO" ]
+    then
+    echo "Writing S3 INFO to $HOME/.s3credentials"
+    echo -e "$S3_INFO" > $HOME/.s3credentials
+  fi
+
   # export GIT_TAG="Release-v$TRAVIS_BUILD_NUMBER"
   export GIT_TAG="Release-v$PROJECT_VERSION"
   echo "GIT_TAG=$GIT_TAG"
@@ -44,38 +63,57 @@ if [ "$THIS_BRANCH" == "release" ];
     git config --global user.email "builder+github@lckymn.com"
     git config --global user.name "Kevin-App-Builder"
 
-    git tag "$GIT_TAG" -a -m "Automatically generated tag by Travis CI for build $TRAVIS_BUILD_NUMBER"
+    git tag "$GIT_TAG" -a -m "Automatically generated tag by Travis CI for $GIT_TAG"
     git push git@github.com:Kevin-Lee/sbt-github-release-example --tags
 
     echo "======================================================"
     echo "ls -l target/scala-2.11/*-one-jar.jar"
     ls -l target/scala-2.11/*-one-jar.jar
     echo "======================================================"
-    if [ -d "target/bin-all" ]; then
-      echo "Clean up existing target/bin-all/*"
-      echo "rm -R target/bin-all/*"
-      rm -R target/bin-all/*
+    if [ -d "target/ci" ]; then
+      echo "Clean up existing target/ci/*"
+      echo "rm -R target/ci/*"
+      rm -R target/ci/*
       echo "------------------------------------------------------"
     fi
     echo "Create a folder to put all the binary files."
     echo "------------------------------------------------------"
-    echo "mkdir -p target/bin-all/$PROJECT_BUILD_NAME"
-    mkdir -p "target/bin-all/$PROJECT_BUILD_NAME"
-    echo "ls -l target/bin-all/$PROJECT_BUILD_NAME"
-    ls -l "target/bin-all/$PROJECT_BUILD_NAME"
+    echo "mkdir -p target/ci/$PROJECT_BUILD_NAME"
+    mkdir -p "target/ci/$PROJECT_BUILD_NAME"
+    echo "ls -l target/ci/$PROJECT_BUILD_NAME"
+    ls -l "target/ci/$PROJECT_BUILD_NAME"
 
     echo "------------------------------------------------------"
-    echo "cp target/scala-2.11/*-one-jar.jar target/bin-all/$PROJECT_BUILD_NAME/"
-    cp target/scala-2.11/*-one-jar.jar "target/bin-all/$PROJECT_BUILD_NAME/"
+    echo "cp target/scala-2.11/*-one-jar.jar target/ci/$PROJECT_BUILD_NAME/"
+    cp target/scala-2.11/*-one-jar.jar "target/ci/$PROJECT_BUILD_NAME/"
     echo "------------------------------------------------------"
-    echo "ls -lR target/bin-all/$PROJECT_BUILD_NAME/"
-    ls -lR "target/bin-all/$PROJECT_BUILD_NAME"
+    echo "ls -lR target/ci/$PROJECT_BUILD_NAME/"
+    ls -lR "target/ci/$PROJECT_BUILD_NAME"
     echo "------------------------------------------------------"
-    echo "Copying all binary files to 'target/bin-all', Done!"
+    echo "Copying all binary files to 'target/ci', Done!"
     echo "======================================================"
   fi
 
-  sbt checkGithubCredentials releaseOnGithub
+  echo "Deploying to GitHub"
+  if sbt checkGithubCredentials releaseOnGithub ; then
+    echo "Deploying to GitHub: Done"
+    if sbt s3-upload ; then
+      echo "Uploading to S3: Done"
+    else
+      echo "============================================"
+      echo "Build and Deploy: Failed"
+      echo "============================================"
+      cleanUp
+      exit 1
+    fi
+  else
+    echo "============================================"
+    echo "Build and Deploy: Failed"
+    echo "============================================"
+    cleanUp
+    exit 1
+  fi
+  cleanUp
 
   echo "============================================"
   echo "Build and Deploy: Done"
