@@ -10,7 +10,7 @@ import S3._
 
 name := """sbt-github-release-example"""
 
-val projectVersion = "1.0"
+val projectVersion = "1.0.1"
 
 version := projectVersion
 
@@ -91,7 +91,7 @@ GithubRelease.commitish := "release"
 
 GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md"
 
-GithubRelease.assets := {
+GithubRelease.releaseAssets := {
 
   val binNames = fileList(target.value / "ci", "*one-jar.jar")
 
@@ -106,7 +106,7 @@ s3Settings
 
 mappings in upload := pathNameAndFileList(target.value, "ci", "*one-jar.jar")
 
-host in upload := sys.env("S3_BUCKET")
+host in upload := sys.env.getOrElse("S3_BUCKET", "")
 
 // progress in upload := true
 
