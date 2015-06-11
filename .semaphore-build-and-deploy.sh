@@ -2,7 +2,7 @@
 
 sbt clean
 sbt writeVersion
-if sbt test 2>&1 ; then
+if sbt test 2>&1 > /dev/null ; then
   echo "Testing failed!"
   exit 1
 fi
