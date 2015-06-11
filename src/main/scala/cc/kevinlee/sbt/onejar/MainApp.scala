@@ -6,4 +6,8 @@ package cc.kevinlee.sbt.onejar
  */
 object MainApp extends App {
   println("It works!!!")
+
+  def doSomething: Unit = {
+    println("doing something...")
+  }
 }
