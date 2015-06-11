@@ -10,7 +10,7 @@ import S3._
 
 name := """sbt-github-release-example"""
 
-val projectVersion = "1.0.1"
+val projectVersion = "1.0.2"
 
 version := projectVersion
 
@@ -24,41 +24,12 @@ libraryDependencies ++= Seq(
   )
 )
 
+import CommonUtils._
+
 lazy val writeVersion = inputKey[Unit]("Write Version in File'")
 
-writeVersion := {
-  println("\n== Writing Version File ==")
-  val args: Seq[String] = Def.spaceDelimited("filename").parsed
-  println(s"The project version is ${projectVersion}.")
+writeVersion := versionWriter(() => Def.spaceDelimited("filename").parsed)(projectVersion)
 
-  import IO._
-
-  val filename = args.headOption.map("target/" + _).getOrElse("target/version.sbt")
-  val versionFile = new File(filename)
-  println(s"write ${projectVersion} into the file: $versionFile")
-
-  write(versionFile, projectVersion, utf8, false)
-  println("Done: Writing Version File\n")
-}
-
-def wildcardFilter(name: String): java.io.FileFilter = new WildcardFileFilter(name).asInstanceOf[java.io.FileFilter]
-
-def getAllSubDirs(dir: File): Array[File] = dir.listFiles(DirectoryFilter).flatMap(x => x +: getAllSubDirs(x))
-
-def fileList(dir: File, name: String): List[File] = {
-  def fileList0(dir: File, name: String): List[File] = dir.listFiles(wildcardFilter(name)).toList
-  (dir :: getAllSubDirs(dir).toList).flatMap(fileList0(_, name))
-}
-def pathNameAndFileList(base: File, dir: String, name: String): List[(File, String)] = {
-  val basePath = base.getPath
-  val basePathLength = basePath.length + (if (basePath.endsWith(java.io.File.separator)) 0 else 1)
-  println(
-    s"""
-       |basePath: $basePath
-       |basePathLength: $basePathLength
-     """.stripMargin)
-  fileList(base / dir, name).map(f => (f, f.getPath)).map { case (file, parent) => (file, parent.drop(basePathLength)) }
-}
 
 lazy val listBinNames = taskKey[Seq[File]]("Prints 'file list'")
 
@@ -70,7 +41,8 @@ listBinNames := {
 //  val binNames = (target.value / "scala-2.11").listFiles(wildcardFilter("*one-jar.jar")).toList
 //  val binNames = fileList(target.value / "scala-2.11", "*one-jar.jar")
 //  val binNames = fileList(target.value , "*")
-  val binNames = pathNameAndFileList(target.value, "" , "*.jar")
+
+  val binNames = fileAndPathNameList(BasePath(target.value), NoPrefix, "*.jar")
 
   println(s"fileNames: \n${binNames.mkString("\n")}")
 
@@ -93,7 +65,7 @@ GithubRelease.notesFile := GithubRelease.notesDir.value / s"${projectVersion}.md
 
 GithubRelease.releaseAssets := {
 
-  val binNames = fileList(target.value / "ci", "*one-jar.jar")
+  val binNames = listFiles(target.value / "ci", "*one-jar.jar")
 
   println(s"fileNames: $binNames")
 
@@ -104,7 +76,7 @@ GithubRelease.releaseAssets := {
 /* S3 Upload { */
 s3Settings
 
-mappings in upload := pathNameAndFileList(target.value, "ci", "*one-jar.jar")
+mappings in upload := fileAndPathNameList(BasePath(target.value, "ci"), Prefix("test-app"), "*one-jar.jar")
 
 host in upload := sys.env.getOrElse("S3_BUCKET", "")
 

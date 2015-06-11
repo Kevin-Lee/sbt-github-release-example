@@ -14,7 +14,7 @@ if [ "$THIS_BRANCH" == "release" ];
 
   if [ ! -n "$PROJECT_VERSION" ]
     then
-    echo "NO PROJECT_VERSION is found so quit!"
+    echo "NO PROJECT_VERSION is found so quit!" 1>&2
     exit 1
   fi
 

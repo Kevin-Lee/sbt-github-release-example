@@ -14,7 +14,7 @@ if [ "$THIS_BRANCH" == "release" ];
 
   if [ ! -n "$PROJECT_VERSION" ]
     then
-    echo "NO PROJECT_VERSION is found so quit!"
+    echo "NO PROJECT_VERSION is found so quit!" 1>&2
     exit 1
   fi
 
@@ -64,19 +64,19 @@ if [ "$THIS_BRANCH" == "release" ];
   fi
 
   echo "Deploying to GitHub"
-  if sbt checkGithubCredentials releaseOnGithub ; then
+  if sbt checkGithubCredentials releaseOnGithub 2>&1 > /dev/null ; then
     echo "Deploying to GitHub: Done"
-    if sbt s3-upload ; then
+    if sbt s3-upload 2>&1 > /dev/null ; then
       echo "Uploading to S3: Done"
     else
       echo "============================================"
-      echo "Build and Deploy: Failed"
+      echo "Build and Deploy: Failed" 1>&2
       echo "============================================"
       exit 1
     fi
   else
     echo "============================================"
-    echo "Build and Deploy: Failed"
+    echo "Build and Deploy: Failed" 1>&2
     echo "============================================"
     exit 1
   fi

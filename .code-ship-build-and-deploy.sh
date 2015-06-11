@@ -27,7 +27,7 @@ if [ "$THIS_BRANCH" == "release" ];
 
   if [ ! -n "$PROJECT_VERSION" ]
     then
-    echo "NO PROJECT_VERSION is found so quit!"
+    echo "NO PROJECT_VERSION is found so quit!" 1>&2
     exit 1
   fi
 
@@ -101,14 +101,14 @@ if [ "$THIS_BRANCH" == "release" ];
       echo "Uploading to S3: Done"
     else
       echo "============================================"
-      echo "Build and Deploy: Failed"
+      echo "Build and Deploy: Failed" 1>&2
       echo "============================================"
       cleanUp
       exit 1
     fi
   else
     echo "============================================"
-    echo "Build and Deploy: Failed"
+    echo "Build and Deploy: Failed" 1>&2
     echo "============================================"
     cleanUp
     exit 1
