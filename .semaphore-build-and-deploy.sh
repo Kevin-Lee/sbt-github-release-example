@@ -2,11 +2,24 @@
 
 sbt clean
 sbt writeVersion
+echo "======================================================"
+echo "Running: sbt test"
+echo "------------------------------------------------------"
 if ! sbt test ; then
   echo "Testing failed!" 2>&1
+  echo "======================================================"
   exit 1
 fi
-sbt one-jar
+  echo "======================================================"
+  echo "Running: sbt one-jar"
+  echo "------------------------------------------------------"
+
+
+if ! sbt one-jar ; then
+  echo "Creating one jar package failed" 2>&1
+  echo "======================================================"
+  exit 1
+fi
 export THIS_BRANCH="$BRANCH_NAME"
 if [ "$THIS_BRANCH" == "release" ];
   then
@@ -66,23 +79,23 @@ if [ "$THIS_BRANCH" == "release" ];
     echo "======================================================"
   fi
 
-#  echo "Deploying to GitHub"
-#  if sbt checkGithubCredentials releaseOnGithub ; then
-#    echo "Deploying to GitHub: Done"
-    if sbt s3-upload ; then
-      echo "Uploading to S3: Done"
-    else
-      echo "============================================"
-      echo "Build and Deploy: Failed"
-      echo "============================================"
-      exit 1
-    fi
-#  else
-#    echo "============================================"
-#    echo "Build and Deploy: Failed" 1>&2
-#    echo "============================================"
-#    exit 1
-#  fi
+  echo "Deploying to GitHub"
+  if sbt checkGithubCredentials releaseOnGithub ; then
+    echo "Deploying to GitHub: Done"
+#    if sbt s3-upload ; then
+#      echo "Uploading to S3: Done"
+#    else
+#      echo "============================================"
+#      echo "Build and Deploy: Failed" 1>&2
+#      echo "============================================"
+#      exit 1
+#    fi
+  else
+    echo "============================================"
+    echo "Build and Deploy: Failed" 1>&2
+    echo "============================================"
+    exit 1
+  fi
 
   echo "============================================"
   echo "Build and Deploy: Done"
