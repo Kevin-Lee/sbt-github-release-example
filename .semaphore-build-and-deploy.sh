@@ -2,7 +2,10 @@
 
 sbt clean
 sbt writeVersion
-sbt test
+if sbt test ; then
+  echo "Testing failed!"
+  exit 1
+fi
 sbt one-jar
 export THIS_BRANCH="$BRANCH_NAME"
 if [ "$THIS_BRANCH" == "release" ];
