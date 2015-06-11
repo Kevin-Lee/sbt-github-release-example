@@ -11,7 +11,7 @@ class MainApp$Test extends WordSpec {
   "MainApp$Test" should {
 
     "doSomething" in {
-      fail("Just failed for testing build!")
+//      fail("Just failed for testing build!")
     }
 
   }

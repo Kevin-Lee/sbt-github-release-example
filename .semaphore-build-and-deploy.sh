@@ -3,7 +3,7 @@
 sbt clean
 sbt writeVersion
 if ! sbt test ; then
-  echo "Testing failed!"
+  echo "Testing failed!" 2>&1
   exit 1
 fi
 sbt one-jar
@@ -66,23 +66,23 @@ if [ "$THIS_BRANCH" == "release" ];
     echo "======================================================"
   fi
 
-  echo "Deploying to GitHub"
-  if sbt checkGithubCredentials releaseOnGithub ; then
-    echo "Deploying to GitHub: Done"
-#    if sbt s3-upload ; then
-#      echo "Uploading to S3: Done"
-#    else
-#      echo "============================================"
-#      echo "Build and Deploy: Failed"
-#      echo "============================================"
-#      exit 1
-#    fi
-  else
-    echo "============================================"
-    echo "Build and Deploy: Failed" 1>&2
-    echo "============================================"
-    exit 1
-  fi
+#  echo "Deploying to GitHub"
+#  if sbt checkGithubCredentials releaseOnGithub ; then
+#    echo "Deploying to GitHub: Done"
+    if sbt s3-upload ; then
+      echo "Uploading to S3: Done"
+    else
+      echo "============================================"
+      echo "Build and Deploy: Failed"
+      echo "============================================"
+      exit 1
+    fi
+#  else
+#    echo "============================================"
+#    echo "Build and Deploy: Failed" 1>&2
+#    echo "============================================"
+#    exit 1
+#  fi
 
   echo "============================================"
   echo "Build and Deploy: Done"
