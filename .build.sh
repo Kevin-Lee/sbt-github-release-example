@@ -1,15 +1,15 @@
 #!/bin/bash -e
 
-sbt clean
-sbt writeVersion
-echo "======================================================"
-echo "Running: sbt one-jar"
-echo "------------------------------------------------------"
+./.env-info.sh
 
-if ! sbt one-jar ; then
-  echo "Creating one jar package failed" 2>&1
+sbt clean
+echo "======================================================"
+echo "Running: sbt compile test"
+echo "------------------------------------------------------"
+if ! sbt compile test ; then
+  echo "Testing failed!" 2>&1
   echo "======================================================"
   exit 1
 fi
-echo "Done: sbt one-jar"
+echo "Done: sbt compile test"
 echo "======================================================"

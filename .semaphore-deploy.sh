@@ -1,9 +1,9 @@
 #!/bin/bash -e
 
-./.env-info.sh
-
-echo "Start to deploy packages"
+echo ""
 echo "============================================"
+echo "Start to deploy packages"
+echo "--------------------------------------------"
 
 export THIS_BRANCH="$BRANCH_NAME"
 if [ "$THIS_BRANCH" == "release" ];
