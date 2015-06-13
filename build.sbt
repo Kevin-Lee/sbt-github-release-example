@@ -10,7 +10,7 @@ import S3._
 
 name := """sbt-github-release-example"""
 
-val projectVersion = "1.0.2"
+val projectVersion = "1.0.3"
 
 version := projectVersion
 
