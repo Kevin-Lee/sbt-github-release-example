@@ -18,7 +18,3 @@ echo "--------------------------------------------"
 echo "grep MemTotal /proc/meminfo"
 grep MemTotal /proc/meminfo
 echo "--------------------------------------------"
-
-./.build-package.sh
-
-./.semaphore-deploy.sh

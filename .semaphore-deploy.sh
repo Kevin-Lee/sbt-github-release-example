@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+./.env-info.sh
+
+echo "Start to deploy packages"
+echo "============================================"
+
 export THIS_BRANCH="$BRANCH_NAME"
 if [ "$THIS_BRANCH" == "release" ];
   then
@@ -22,9 +27,12 @@ if [ "$THIS_BRANCH" == "release" ];
   echo "check git ls-remote --exit-code --tags origin $GIT_TAG 2>&1 > /dev/null"
 
   if git ls-remote --exit-code --tags origin $GIT_TAG 2>&1 > /dev/null ; then
+    echo "------------------------------------------------------"
     echo "[ERROR] the given tag '$GIT_TAG' already exists!" 2>&1
+    echo "======================================================"
     exit 1
   else
+    echo "------------------------------------------------------"
     echo "the given tag '$GIT_TAG' does not exist so run it!"
     git config --global user.email "builder+github@lckymn.com"
     git config --global user.name "Kevin-App-Builder"

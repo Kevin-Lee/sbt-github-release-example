@@ -1,5 +1,7 @@
 #!/bin/bash -e
 
+./.env-info.sh
+
 sbt clean
 sbt writeVersion
 echo "======================================================"
