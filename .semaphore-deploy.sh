@@ -24,6 +24,16 @@ if [ "$THIS_BRANCH" == "release" ];
   export PROJECT_BUILD_NAME="$GIT_TAG"
   echo "PROJECT_BUILD_NAME=$PROJECT_BUILD_NAME"
 
+  echo "======================================================"
+  echo "Running: git tag | xargs -n1 git tag -d"
+  echo "------------------------------------------------------"
+  git tag | xargs -n1 git tag -d
+  echo "======================================================"
+  echo "Running: git fetch --tags"
+  echo "------------------------------------------------------"
+  git fetch --tags
+  echo "======================================================"
+
   echo "check git ls-remote --exit-code --tags origin $GIT_TAG 2>&1 > /dev/null"
 
   if git ls-remote --exit-code --tags origin $GIT_TAG 2>&1 > /dev/null ; then
@@ -41,10 +51,15 @@ if [ "$THIS_BRANCH" == "release" ];
     git config --global user.email "builder+github@lckymn.com"
     git config --global user.name "Kevin-App-Builder"
 
+    echo "======================================================"
     echo "Running: git tag $GIT_TAG -a -m Automatically generated tag by Semaphore CI for $GIT_TAG"
+    echo "------------------------------------------------------"
     git tag "$GIT_TAG" -a -m "Automatically generated tag by Semaphore CI for $GIT_TAG"
+    echo "======================================================"
     echo "git push $REPO_LOCATION --tags"
+    echo "------------------------------------------------------"
     git push "$REPO_LOCATION" --tags
+    echo "======================================================"
 
 
     echo "======================================================"
