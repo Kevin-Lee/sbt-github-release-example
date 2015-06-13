@@ -7,8 +7,8 @@ jdk:
   - oraclejdk8
 scala:
   - 2.11.6
-before_script:
-  - ./.build-and-deploy.sh
+#before_script:
+#  - ./.build-and-deploy.sh
 script:
 #  - if [ "$TRAVIS_BRANCH" == "release" ]; then sbt checkGithubCredentials releaseOnGithub; fi
   # Tricks to avoid unnecessary cache updates
