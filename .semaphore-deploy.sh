@@ -34,11 +34,18 @@ if [ "$THIS_BRANCH" == "release" ];
   else
     echo "------------------------------------------------------"
     echo "the given tag '$GIT_TAG' does not exist so run it!"
+
+    export REPO_LOCATION="git@github.com:Kevin-Lee/sbt-github-release-example"
+    echo "REPO_LOCATION=$REPO_LOCATION"
+
     git config --global user.email "builder+github@lckymn.com"
     git config --global user.name "Kevin-App-Builder"
 
+    echo "Running: git tag $GIT_TAG -a -m Automatically generated tag by Semaphore CI for $GIT_TAG"
     git tag "$GIT_TAG" -a -m "Automatically generated tag by Semaphore CI for $GIT_TAG"
-    git push git@github.com:Kevin-Lee/sbt-github-release-example --tags
+    echo "git push $REPO_LOCATION --tags"
+    git push "$REPO_LOCATION" --tags
+
 
     echo "======================================================"
     echo "ls -l target/scala-2.11/*-one-jar.jar"
